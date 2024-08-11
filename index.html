@@ -5,23 +5,22 @@
     <meta charset="UTF-8">
     <title>Audio Visualizer</title>
 
-    <script src="/static/src/music_visualizer.js" type="text/javascript"></script>
- 
-    <link rel="stylesheet" href="/static/src/style.css">
+    <script src="/src/music_visualizer.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="/src/style.css">
 </head>
 
 <body>
     <div id="background">
         <!-- <img id="background_img" src="https://wallpaperaccess.com/full/495414.jpg" alt=""> -->
-        <video id = background_vid ></video>
+        <video id=background_vid></video>
     </div>
     <div id="wrapper">
         <canvas id="canvas"></canvas>
         <button class="container " id="prevSong">
             <div class="container__triangle container__triangle--left"></div>
         </button>
-        <button class="button" style="vertical-align:middle" id="play"> <img id="image"
-                src="/static/img/NXito Big.png">
+        <button class="button" style="vertical-align:middle" id="play"> <img id="image" src="/img/NXito Big.png">
         </button>
         <button class="container " id="nextSong">
             <div class="container__triangle container__triangle--right"></div>
@@ -31,8 +30,8 @@
             <div><span id="tracktime">00:00:00</span></div>
         </div>
     </div>
-<script>
-    
+    <script>
+
         // Al terminar una cancion, avanzar a la siguiente
         //click dercho para ver opcionesy listado de canciones
         //si el archivo de audio es mp4, el background cambia a video
@@ -51,25 +50,25 @@
         // img.style.background = `url('${backgroundImage}') no-repeat`
         // img.style["background-size"] ="cover"
         //  img.src = backgroundImage
-        function checkvideo () {
-            let vid =document.getElementById("background_vid")
+        function checkvideo() {
+            let vid = document.getElementById("background_vid")
             // let img = document.getElementById("background_img")
 
-            if(config.src.split(".").pop().match(/mp4/i)){
-                let wrapper=document.getElementById("wrapper")
-                wrapper.style.opacity ="0.3"
-                let vid =document.getElementById("background_vid")
-                vid.muted = true; 
+            if (config.src.split(".").pop().match(/mp4/i)) {
+                let wrapper = document.getElementById("wrapper")
+                wrapper.style.opacity = "0.3"
+                let vid = document.getElementById("background_vid")
+                vid.muted = true;
                 vid.src = config.src
-                vid.currentTime  = audio.currentTime 
-                vid.style.display ="block"
+                vid.currentTime = audio.currentTime
+                vid.style.display = "block"
                 // img.style.display ="none"
-                if(!isPlayed){try{vid.resume();}catch(err){vid.play();}}else{vid.pause();}
+                if (!isPlayed) { try { vid.resume(); } catch (err) { vid.play(); } } else { vid.pause(); }
 
-            }else{
-                wrapper.style.opacity ="1"
-                vid.src=""
-                vid.style.display ="none"
+            } else {
+                wrapper.style.opacity = "1"
+                vid.src = ""
+                vid.style.display = "none"
                 // img.style.display ="block"
             }
 
@@ -77,65 +76,74 @@
 
 
         window.onload = function () {
-            
-            fetch("/tracks")
-                .then(response => response.json())
-                .then(data => {
-                    
-                    if(Array.isArray(data)){
-                        let aux = []
-                        for ( let i in data){
-                            let item = data[i]
- 
-                               aux.push(item.path) 
- 
-                        }
-                        data = aux
-                    }
-                    let currentSong = data[counter]
-                    config.src = currentSong;
-                    document.getElementById('songName').innerHTML = config.src ? config.src.split("/").pop() : " - ";
-                    var prevSong = document.getElementById("prevSong")
-                    prevSong.addEventListener("click", function () {
-                        counter--
-                        if (counter < 0) { counter = data.length - 1 }
-                        currentSong = data[counter]
-                        config.src = currentSong
-                        currentSongTimePaused = 0;
-                        audio.currentTime = 0
-                        checkvideo ()
-                        let vid =document.getElementById("background_vid")
-                        vid.src=""  
-                        visualize(volumen, config);
-                        visualize(volumen, config);
-                    });
-                    var nextSong = document.getElementById("nextSong")
-                    nextSong.addEventListener("click", function () {
-                        counter++
-                        if (counter > data.length - 1) { counter = 0 }
-                        currentSong = data[counter]
-                        config.src = currentSong
-                        currentSongTimePaused = 0;
-                        audio.currentTime = 0
-                        checkvideo ()
-                        let vid =document.getElementById("background_vid")
-                        vid.src=""                        
-                        visualize(volumen, config);
-                        visualize(volumen, config);
-                    });
 
-                    var play = document.getElementById("play")
-                    play.addEventListener("click", function () {
-                        checkvideo ()
-                        visualize(volumen, config);
-                    });
+            // fetch("./tracks/Unlike%20Pluto%20-%20Everything%20Black.mp3")
+            //     .then(response => response.json())
+            //     .then(data => {
+            let data = [{
+
+                path: '/tracks/Unlike Pluto - Everything Black.mp3',
+                name: 'Unlike Pluto - Everything Black.mp3'
+            },
+            {
+
+                path: '/tracks/Suno AI - Celtic son - el magias de oz.mp3',
+                name: 'Suno AI - Celtic son - el magias de oz.mp3'
+            }]
+            if (Array.isArray(data)) {
+                let aux = []
+                for (let i in data) {
+                    let item = data[i]
+
+                    aux.push(__ghRepo + item.path)
+
+                }
+                data = aux
+            }
+            let currentSong = data[counter]
+            config.src = currentSong;
+            document.getElementById('songName').innerHTML = config.src ? config.src.split("/").pop() : " - ";
+            var prevSong = document.getElementById("prevSong")
+            prevSong.addEventListener("click", function () {
+                counter--
+                if (counter < 0) { counter = data.length - 1 }
+                currentSong = data[counter]
+                config.src = currentSong
+                currentSongTimePaused = 0;
+                audio.currentTime = 0
+                checkvideo()
+                let vid = document.getElementById("background_vid")
+                vid.src = ""
+                visualize(volumen, config);
+                visualize(volumen, config);
+            });
+            var nextSong = document.getElementById("nextSong")
+            nextSong.addEventListener("click", function () {
+                counter++
+                if (counter > data.length - 1) { counter = 0 }
+                currentSong = data[counter]
+                config.src = currentSong
+                currentSongTimePaused = 0;
+                audio.currentTime = 0
+                checkvideo()
+                let vid = document.getElementById("background_vid")
+                vid.src = ""
+                visualize(volumen, config);
+                visualize(volumen, config);
+            });
+
+            var play = document.getElementById("play")
+            play.addEventListener("click", function () {
+                checkvideo()
+                visualize(volumen, config);
+            });
 
 
-                });
+            // });
 
         }
 
-</script>
+    </script>
 </body>
 
 </html>
